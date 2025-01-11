@@ -8,6 +8,18 @@ require_once __DIR__ . '/../../controllers/productController.php';
 
 $productController = new ProductController($conn);
 $products = $productController->index();
+
+// Agrupar productos por categoría
+$productsByCategory = [];
+foreach ($products as $product) {
+    if (!empty($product->category_names)) {
+        $category = $product->category_names[0];
+        if (!isset($productsByCategory[$category])) {
+            $productsByCategory[$category] = [];
+        }
+        $productsByCategory[$category][] = $product;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -35,6 +47,13 @@ $products = $productController->index();
         }
         .product-card:hover {
             transform: translateY(-5px);
+        }
+        .products-scroll {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .products-scroll::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
@@ -150,43 +169,48 @@ $products = $productController->index();
                 </button>
             </div>
 
-            <!-- Grid de Productos -->
-            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <?php foreach ($products as $product): ?>
-                <a href="<?php echo htmlspecialchars($product->slug); ?>" class="block group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
-                    <div class="relative">
-                        <img src="https://placehold.co/400x400" 
-                             alt="<?php echo htmlspecialchars($product->title); ?>"
-                             class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500">
-                             
-                        <?php if (!empty($product->category_names)): ?>
-                        <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-blue-600 text-xs font-medium px-3 py-1.5 rounded-full">
-                            <?php echo htmlspecialchars($product->category_names[0]); ?>
-                        </span>
-                        <?php endif; ?>
+            <!-- Productos por categoría -->
+            <?php foreach ($productsByCategory as $category => $categoryProducts): ?>
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold mb-6"><?php echo htmlspecialchars($category); ?></h3>
+                <div class="flex overflow-x-auto products-scroll gap-6 pb-4">
+                    <?php foreach ($categoryProducts as $product): ?>
+                    <div class="min-w-[280px] flex-shrink-0">
+                        <a href="<?php echo htmlspecialchars($product->slug); ?>" class="block group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
+                            <div class="relative">
+                                <img src="https://placehold.co/400x400" 
+                                     alt="<?php echo htmlspecialchars($product->title); ?>"
+                                     class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500">
+                                     
+                                <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-blue-600 text-xs font-medium px-3 py-1.5 rounded-full">
+                                    <?php echo htmlspecialchars($category); ?>
+                                </span>
+                            </div>
+                            
+                            <div class="p-6">
+                                <h3 class="font-semibold text-lg text-gray-900 mb-2 truncate group-hover:text-blue-600 transition-colors">
+                                    <?php echo htmlspecialchars($product->title); ?>
+                                </h3>
+                                
+                                <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+                                    <?php echo htmlspecialchars($product->description); ?>
+                                </p>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-gray-900">
+                                        $<?php echo number_format($product->price, 2); ?>
+                                    </span>
+                                    <span class="bg-blue-50 group-hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        Ver detalles
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                    
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg text-gray-900 mb-2 truncate group-hover:text-blue-600 transition-colors">
-                            <?php echo htmlspecialchars($product->title); ?>
-                        </h3>
-                        
-                        <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-                            <?php echo htmlspecialchars($product->description); ?>
-                        </p>
-                        
-                        <div class="flex items-center justify-between">
-                            <span class="text-xl font-bold text-gray-900">
-                                $<?php echo number_format($product->price, 2); ?>
-                            </span>
-                            <span class="bg-blue-50 group-hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                Ver detalles
-                            </span>
-                        </div>
-                    </div>
-                </a>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
+            <?php endforeach; ?>
         </div>
     </section>
 
