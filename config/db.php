@@ -1,12 +1,12 @@
 <?php
 $host = 'localhost';
-// $dbname = 'u541681057_AndesSoftware';
-// $user = 'u541681057_AndesSoftware';
-// $password = '5?*:J>VPj';
+$dbname = 'u482331776_repuestosmarcu';
+$user = 'u482331776_repuestosmarcu';
+$password = '2D:pbQq~a';
 
-$dbname = 'catalogoproductos';
-$user = 'root';
-$password = '';
+// $dbname = 'catalogoproductos';
+// $user = 'root';
+// $password = '';
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);
