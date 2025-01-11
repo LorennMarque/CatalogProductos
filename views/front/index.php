@@ -62,7 +62,7 @@ $products = $productController->index();
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-4">
                     <button class="p-2 hover:text-[#1d8ade]">
                         <i data-feather="shopping-cart"></i>
                     </button>
@@ -175,11 +175,11 @@ $products = $productController->index();
                             <?php echo htmlspecialchars($product->description); ?>
                         </p>
                         
-                        <div class="flex items-center justify-between">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <span class="text-xl font-bold text-gray-900">
                                 $<?php echo number_format($product->price, 2); ?>
                             </span>
-                            <span class="bg-blue-50 group-hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            <span class="bg-blue-50 group-hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors text-center">
                                 Ver detalles
                             </span>
                         </div>
