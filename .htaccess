@@ -1,0 +1,12 @@
+# Activar el Rewrite Engine
+RewriteEngine On
+
+# Si el archivo o directorio existe, permitir acceso directo
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redireccionar todo a index.php usando una variable "page"
+RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?page=$1 [QSA,L]
+
+# Ejemplo para la raíz: redirigir a inicio por defecto
+RewriteRule ^$ index.php?page=index [QSA,L]
