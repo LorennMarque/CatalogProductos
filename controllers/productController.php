@@ -21,18 +21,22 @@ class ProductController {
             $stmt = $this->db->prepare($query);
             $stmt->execute();
             
-            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            // Procesar las categorías
-            foreach ($products as &$product) {
-                $product['category_ids'] = $product['category_ids'] ? 
-                    array_map('intval', explode(',', $product['category_ids'])) : [];
-                $product['category_names'] = $product['category_names'] ? 
-                    explode(',', $product['category_names']) : [];
+            $products = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $product = new stdClass();
+                $product->id = $row['id'];
+                $product->title = $row['title'];
+                $product->description = $row['description'];
+                $product->slug = $row['slug'];
+                $product->image = $row['image'];
+                $product->price = $row['price'];
+                $product->category_ids = $row['category_ids'] ? 
+                    array_map('intval', explode(',', $row['category_ids'])) : [];
+                $product->category_names = $row['category_names'] ? 
+                    explode(',', $row['category_names']) : [];
+                
+                $products[] = $product;
             }
-            
-            // Debug
-            error_log('Productos recuperados de DB: ' . print_r($products, true));
             
             return $products;
         } catch (PDOException $e) {

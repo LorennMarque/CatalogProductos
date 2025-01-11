@@ -24,9 +24,13 @@ switch ($route) {
         loadView('front/index');
         break;
 
-        case 'contacto':
-            loadView('front/contact_form');
-            break;
+    case 'contacto':
+        loadView('front/contact_form');
+        break;
+
+    case 'productos':
+        loadView('front/products');
+        break;
 
     case 'ingresar':
     case 'login':
