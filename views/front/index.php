@@ -92,8 +92,8 @@ $products = $productController->index();
     <section id="categorias" class="py-20 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-12">Categorías Principales</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="group relative overflow-hidden rounded-lg shadow-lg">
+            <div class="flex overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 pb-4">
+                <div class="group relative overflow-hidden rounded-lg shadow-lg min-w-[280px] md:min-w-0">
                     <img src="https://placehold.co/400x300" alt="Categoría Motor" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
                     <div class="absolute bottom-0 left-0 p-6">
@@ -102,7 +102,7 @@ $products = $productController->index();
                     </div>
                 </div>
 
-                <div class="group relative overflow-hidden rounded-lg shadow-lg">
+                <div class="group relative overflow-hidden rounded-lg shadow-lg min-w-[280px] md:min-w-0">
                     <img src="https://placehold.co/400x300" alt="Categoría Frenos" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
                     <div class="absolute bottom-0 left-0 p-6">
@@ -111,7 +111,7 @@ $products = $productController->index();
                     </div>
                 </div>
 
-                <div class="group relative overflow-hidden rounded-lg shadow-lg">
+                <div class="group relative overflow-hidden rounded-lg shadow-lg min-w-[280px] md:min-w-0">
                     <img src="https://placehold.co/400x300" alt="Categoría Suspensión" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
                     <div class="absolute bottom-0 left-0 p-6">
@@ -120,7 +120,7 @@ $products = $productController->index();
                     </div>
                 </div>
 
-                <div class="group relative overflow-hidden rounded-lg shadow-lg">
+                <div class="group relative overflow-hidden rounded-lg shadow-lg min-w-[280px] md:min-w-0">
                     <img src="https://placehold.co/400x300" alt="Categoría Transmisión" class="w-full h-64 object-cover transform group-hover:scale-110 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
                     <div class="absolute bottom-0 left-0 p-6">
@@ -151,7 +151,7 @@ $products = $productController->index();
             </div>
 
             <!-- Grid de Productos -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 <?php foreach ($products as $product): ?>
                 <a href="<?php echo htmlspecialchars($product->slug); ?>" class="block group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
                     <div class="relative">
