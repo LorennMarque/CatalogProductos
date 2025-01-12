@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+    
 include __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../controllers/productController.php';
 
@@ -21,9 +21,9 @@ $products = $productController->index();
     <meta property="og:title" content="Marcus Repuestos | Tienda Online de Repuestos Automotor">
     <meta property="og:description" content="Tu tienda online de confianza para repuestos automotrices de alta calidad. Amplio catálogo de autopartes con las mejores marcas.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://marcusrepuestos.com">
+    <meta property="og:url" content="https://repuestosmarcus.com.ar/">
     <meta property="og:image" content="https://placehold.co/400x400">
-    <link rel="canonical" href="https://marcusrepuestos.com">
+    <link rel="canonical" href="https://repuestosmarcus.com.ar/">
     <title>Marcus Repuestos | Tienda Online de Repuestos Automotor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/feather-icons"></script>
