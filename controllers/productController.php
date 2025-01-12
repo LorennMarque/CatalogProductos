@@ -23,17 +23,18 @@ class ProductController {
             
             $products = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $product = new stdClass();
-                $product->id = $row['id'];
-                $product->title = $row['title'];
-                $product->description = $row['description'];
-                $product->slug = $row['slug'];
-                $product->image = $row['image'];
-                $product->price = $row['price'];
-                $product->category_ids = $row['category_ids'] ? 
-                    array_map('intval', explode(',', $row['category_ids'])) : [];
-                $product->category_names = $row['category_names'] ? 
-                    explode(',', $row['category_names']) : [];
+                $product = [
+                    'id' => $row['id'],
+                    'title' => $row['title'],
+                    'description' => $row['description'],
+                    'slug' => $row['slug'],
+                    'image' => $row['image'] ? '/' . $row['image'] : null,
+                    'price' => floatval($row['price']),
+                    'category_ids' => $row['category_ids'] ? 
+                        array_map('intval', explode(',', $row['category_ids'])) : [],
+                    'category_names' => $row['category_names'] ? 
+                        explode(',', $row['category_names']) : []
+                ];
                 
                 $products[] = $product;
             }
@@ -41,7 +42,7 @@ class ProductController {
             return $products;
         } catch (PDOException $e) {
             error_log('Error en ProductController::index: ' . $e->getMessage());
-            return [];
+            return false;
         }
     }
 

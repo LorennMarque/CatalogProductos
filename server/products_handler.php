@@ -2,15 +2,16 @@
 // Prevenir cualquier output antes de la respuesta JSON
 ob_start();
 
+// Habilitar la visualización de errores para depuración
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 include __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../controllers/productController.php';
 
 $productController = new ProductController($conn);
 $response = ['success' => false, 'message' => '', 'data' => null];
-
-// Limpiar cualquier output previo
-ob_clean();
 
 // Ensure the uploads directory exists
 $uploadDir = __DIR__ . '/../public/uploads/products/';
@@ -99,7 +100,7 @@ try {
             if ($productController->delete($_POST['id'])) {
                 // Delete associated image if exists
                 if (!empty($product['image'])) {
-                    $imagePath = __DIR__ . '/../' . $product['image'];
+                    $imagePath = __DIR__ . '/../' . ltrim($product['image'], '/');
                     if (file_exists($imagePath)) {
                         unlink($imagePath);
                     }
@@ -127,24 +128,9 @@ try {
 
         case 'list':
             $products = $productController->index();
-            if (!is_array($products)) {
-                throw new Exception('Failed to fetch products');
+            if ($products === false) {
+                throw new Exception('Error fetching products');
             }
-            
-            foreach ($products as &$product) {
-                $product = array_merge([
-                    'id' => '',
-                    'title' => '',
-                    'description' => '',
-                    'price' => 0,
-                    'image' => null
-                ], $product);
-                
-                if (!empty($product['image'])) {
-                    $product['image'] = '/' . $product['image'];
-                }
-            }
-            
             $response['success'] = true;
             $response['data'] = $products;
             break;
@@ -153,18 +139,22 @@ try {
             throw new Exception('Invalid action');
     }
 } catch (Exception $e) {
-    $response['message'] = 'Error: ' . $e->getMessage();
+    $response['success'] = false;
+    $response['message'] = $e->getMessage();
+    error_log('Error in products_handler.php: ' . $e->getMessage());
 }
 
-// Asegurar que los headers no se han enviado
-if (!headers_sent()) {
-    header('Content-Type: application/json');
-    header('Cache-Control: no-cache, must-revalidate');
+// Asegurar headers correctos
+header('Content-Type: application/json');
+header('Cache-Control: no-cache, must-revalidate');
+
+// Limpiar cualquier output previo
+while (ob_get_level()) {
+    ob_end_clean();
 }
 
-// Limpiar cualquier output antes de enviar la respuesta JSON
-ob_clean();
-echo json_encode($response);
+// Enviar respuesta
+echo json_encode($response, JSON_UNESCAPED_UNICODE);
 exit;
 
 function createSlug($title) {

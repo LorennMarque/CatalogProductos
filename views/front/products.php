@@ -140,32 +140,32 @@ $products = $productController->index();
                     <?php foreach ($products as $product): ?>
                     <div class="product-card bg-white rounded-xl overflow-hidden">
                         <div class="relative group">
-                            <img src="<?php echo htmlspecialchars($product->image); ?>" 
-                                 alt="<?php echo htmlspecialchars($product->title); ?>"
+                            <img src="<?php echo htmlspecialchars($product['image']); ?>" 
+                                 alt="<?php echo htmlspecialchars($product['title']); ?>"
                                  class="w-full h-48 object-cover">
                             <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <button class="bg-white text-gray-900 px-4 py-2 rounded-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
                                     Ver detalles
                                 </button>
                             </div>
-                            <?php if (!empty($product->category_names)): ?>
+                            <?php if (!empty($product['category_names'])): ?>
                             <div class="absolute top-2 right-2">
                                 <span class="bg-[#1d8ade] text-white text-xs px-3 py-1 rounded-full">
-                                    <?php echo htmlspecialchars($product->category_names[0]); ?>
+                                    <?php echo htmlspecialchars($product['category_names'][0]); ?>
                                 </span>
                             </div>
                             <?php endif; ?>
                         </div>
                         <div class="p-6">
                             <h3 class="text-lg font-bold text-gray-900 mb-2 hover:text-[#1d8ade] transition">
-                                <a href="#"><?php echo htmlspecialchars($product->title); ?></a>
+                                <a href="#"><?php echo htmlspecialchars($product['title']); ?></a>
                             </h3>
                             <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                                <?php echo htmlspecialchars($product->description); ?>
+                                <?php echo htmlspecialchars($product['description']); ?>
                             </p>
                             <div class="flex justify-between items-center">
                                 <span class="text-2xl font-bold text-[#1d8ade]">
-                                    $<?php echo number_format($product->price, 2); ?>
+                                    $<?php echo number_format($product['price'], 2); ?>
                                 </span>
                                 <button class="bg-zinc-900 hover:bg-[#1d8ade] text-white px-6 py-2 rounded-full transition flex items-center space-x-2">
                                     <i data-feather="shopping-cart" class="w-4 h-4"></i>

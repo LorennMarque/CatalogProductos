@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-    
+
 include __DIR__ . '/../../config/db.php';
 require_once __DIR__ . '/../../controllers/productController.php';
 
@@ -153,31 +153,31 @@ $products = $productController->index();
             <!-- Grid de Productos -->
             <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 <?php foreach ($products as $product): ?>
-                <a href="<?php echo htmlspecialchars($product->slug); ?>" class="block group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
+                <a href="<?php echo htmlspecialchars($product['slug']); ?>" class="block group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
                     <div class="relative">
                         <img src="https://placehold.co/400x400" 
-                             alt="<?php echo htmlspecialchars($product->title); ?>"
+                             alt="<?php echo htmlspecialchars($product['title']); ?>"
                              class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500">
                              
-                        <?php if (!empty($product->category_names)): ?>
+                        <?php if (!empty($product['category_names'])): ?>
                         <span class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-blue-600 text-xs font-medium px-3 py-1.5 rounded-full">
-                            <?php echo htmlspecialchars($product->category_names[0]); ?>
+                            <?php echo htmlspecialchars($product['category_names'][0]); ?>
                         </span>
                         <?php endif; ?>
                     </div>
                     
                     <div class="p-6">
                         <h3 class="font-semibold text-lg text-gray-900 mb-2 truncate group-hover:text-blue-600 transition-colors">
-                            <?php echo htmlspecialchars($product->title); ?>
+                            <?php echo htmlspecialchars($product['title']); ?>
                         </h3>
                         
                         <p class="text-sm text-gray-600 mb-4 line-clamp-2">
-                            <?php echo htmlspecialchars($product->description); ?>
+                            <?php echo htmlspecialchars($product['description']); ?>
                         </p>
                         
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <span class="text-xl font-bold text-gray-900">
-                                $<?php echo number_format($product->price, 2); ?>
+                                $<?php echo number_format($product['price'], 2); ?>
                             </span>
                             <span class="bg-blue-50 group-hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors text-center">
                                 Ver detalles

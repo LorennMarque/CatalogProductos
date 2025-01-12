@@ -201,25 +201,42 @@ $products = $productController->index();
     let currentProducts = [];
 
     function loadProducts() {
-        fetch('server/products_handler.php', {
+        fetch('/CatalogProductos/server/products_handler.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: 'action=list'
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error('Error response:', text);
+                    throw new Error('Network response was not ok');
+                });
+            }
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Error parsing JSON:', text);
+                    throw new Error('Invalid JSON response');
+                }
+            });
+        })
         .then(data => {
-            console.log('Productos recibidos:', data); // Para depuración
+            console.log('Respuesta exitosa:', data);
             if (data.success) {
-                currentProducts = data.data;
+                currentProducts = data.data || [];
                 renderProducts();
             } else {
                 console.error('Error al cargar productos:', data.message);
+                showNotification('Error al cargar productos: ' + data.message, 'error');
             }
         })
         .catch(error => {
             console.error('Error en la petición:', error);
+            showNotification('Error al cargar productos: ' + error.message, 'error');
         });
     }
 
@@ -227,21 +244,17 @@ $products = $productController->index();
         const productsContainer = document.getElementById('productsTableBody');
         const emptyState = document.getElementById('emptyState');
         
-        if (!Array.isArray(productsToRender) || productsToRender.length === 0) {
-            console.log('No hay productos para mostrar');
+        if (!productsToRender || productsToRender.length === 0) {
             productsContainer.innerHTML = '';
             emptyState.classList.remove('hidden');
             return;
         }
 
-        console.log('Renderizando productos:', productsToRender);
-        
         emptyState.classList.add('hidden');
         productsContainer.innerHTML = '';
         
         productsToRender.forEach(product => {
-            if (!product) return;
-            
+            const productImage = product.image ? product.image.replace(/^\//, '') : null;
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -256,8 +269,8 @@ $products = $productController->index();
                     <div class="text-sm text-gray-900">$${parseFloat(product.price || 0).toFixed(2)}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    ${product.image ? 
-                        `<img src="${product.image}" alt="${product.title}" class="h-12 w-12 object-cover rounded">` :
+                    ${productImage ? 
+                        `<img src="${productImage}" alt="${product.title}" class="h-12 w-12 object-cover rounded">` :
                         `<div class="h-12 w-12 rounded bg-gray-100 flex items-center justify-center">
                             <i data-feather="image" class="w-6 h-6 text-gray-400"></i>
                          </div>`
