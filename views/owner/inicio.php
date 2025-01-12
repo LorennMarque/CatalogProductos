@@ -201,7 +201,7 @@ $products = $productController->index();
     let currentProducts = [];
 
     function loadProducts() {
-        fetch('/CatalogProductos/server/products_handler.php', {
+        fetch('server/products_handler.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
