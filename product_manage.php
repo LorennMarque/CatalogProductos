@@ -41,12 +41,28 @@ if (isset($_POST['submit'])) {
     // Manejo de imágenes
     $target_dir = "uploads/";
     $imageFiles = [];
+    
+    // Crear el directorio si no existe
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+    
     if (!empty($_FILES['images']['name'][0])) {
         foreach ($_FILES['images']['name'] as $key => $fileName) {
             if ($_FILES['images']['size'][$key] > 0) {
                 $target_file = $target_dir . uniqid() . "_" . basename($fileName); // Nombre único
+                
+                // Verificar permisos de escritura
+                if (!is_writable($target_dir)) {
+                    chmod($target_dir, 0777);
+                }
+                
                 if (move_uploaded_file($_FILES['images']['tmp_name'][$key], $target_file)) {
                     $imageFiles[] = $target_file;
+                } else {
+                    // Manejar error de carga
+                    $error = error_get_last();
+                    error_log("Error al subir imagen: " . $error['message']);
                 }
             }
         }
