@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 include 'db.php';
 
 $stmt = $pdo->query("SELECT * FROM categories");
@@ -13,18 +14,18 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repuestos Automotrices Marcus - Venta de Repuestos y Autopartes</title>
+    <title><?php echo COMPANY_NAME; ?> - Venta de Repuestos y Autopartes</title>
     <meta name="description" content="La mejor tienda de repuestos automotrices en Argentina. Amplio catálogo de autopartes originales y alternativos, frenos, suspensión, motor y más. Envíos a todo el país y asesoramiento profesional.">
-    <link rel="icon" href="roundedLogo.png" type="image/png">
+    <link rel="icon" href="<?php echo SITE_LOGO; ?>" type="image/png">
 
     <meta name="keywords" content="repuestos automotrices, autopartes, repuestos originales, repuestos alternativos, frenos, suspensión, motor, repuestos de autos, venta de repuestos, Marcus autopartes">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <meta property="og:title" content="Repuestos Automotrices Marcus - Líder en Venta de Autopartes">
+    <meta property="og:title" content="<?php echo COMPANY_NAME; ?> - Líder en Venta de Autopartes">
     <meta property="og:description" content="Encuentra todos los repuestos que necesitas para tu vehículo. Calidad garantizada y los mejores precios del mercado.">
-    <meta property="og:image" content="https://repuestosautomotricesmarcus.com.ar/portada.png">
-    <meta property="og:url" content="https://repuestosautomotricesmarcus.com.ar">
+    <meta property="og:image" content="<?php echo SITE_URL; ?>/portada.png">
+    <meta property="og:url" content="<?php echo SITE_URL; ?>">
     <style>
         .whatsapp-float {
             position: fixed;
@@ -56,8 +57,8 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <header class="d-flex align-items-center">
     <nav class="navbar navbar-expand-lg navbar-dark container">
     <a class="navbar-brand d-flex align-items-center text-light" href="#">
-        <img src="roundedLogo.png" alt="Logo Repuestos Automotrices Marcus" width="40" height="40" class="me-2">
-        <b style="font-size:30px;">Repuestos Automotrices Marcus</b>
+        <img src="<?php echo SITE_LOGO; ?>" alt="Logo <?php echo COMPANY_NAME; ?>" width="40" height="40" class="me-2">
+        <b style="font-size:30px;"><?php echo COMPANY_NAME; ?></b>
     </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -78,7 +79,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </li>
             </ul>
         </div>
-        <a href="https://wa.me/+541169651171" class="btn btn-danger d-none d-lg-block">Contáctanos</a>
+        <a href="<?php echo COMPANY_WHATSAPP_LINK; ?>" class="btn btn-danger d-none d-lg-block">Contáctanos</a>
     </nav>
 </header>
 
@@ -173,7 +174,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </div>
     </section>
 
-    <a href="https://wa.me/+541169651171" class="whatsapp-float" target="_blank">
+    <a href="<?php echo COMPANY_WHATSAPP_LINK; ?>" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp my-float"></i>
     </a>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 include 'db.php';
 
 $category_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -31,23 +32,23 @@ $products_result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($category['name']) ?> - Repuestos Automotrices Marcus</title>
-    <meta name="description" content="Encuentra los mejores productos de <?= htmlspecialchars($category['name']) ?> en Repuestos Automotrices Marcus.">
-    <link rel="icon" href="roundedLogo.png" type="image/png">
+    <title><?= htmlspecialchars($category['name']) ?> - <?php echo COMPANY_NAME; ?></title>
+    <meta name="description" content="Encuentra los mejores productos de <?= htmlspecialchars($category['name']) ?> en <?php echo COMPANY_NAME; ?>.">
+    <link rel="icon" href="<?php echo SITE_LOGO; ?>" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <metaproperty="og:title"content="Venta de Repuestos - Tu tienda única para repuestos de automóviles">
-    <metaproperty="og:description"content="Encuentra las piezas de automóvil perfectas para tu vehículo.">
-    <metaproperty="og:image"content="https://encendidoelrayo.com.ar/portada.png">
-    <metaproperty="og:url"content="https://encendidoelrayo.com.ar">
+    <meta property="og:title" content="<?php echo COMPANY_NAME; ?> - Tu tienda única para repuestos de automóviles">
+    <meta property="og:description" content="Encuentra las piezas de automóvil perfectas para tu vehículo.">
+    <meta property="og:image" content="<?php echo SITE_URL; ?>/portada.png">
+    <meta property="og:url" content="<?php echo SITE_URL; ?>">
 </head>
 <body>
 <header class="d-flex align-items-center">
     <nav class="navbar navbar-expand-lg navbar-dark container">
         <a class="navbar-brand d-flex align-items-center text-light" href="index.php">
-            <img src="roundedLogo.png" alt="Logo" width="40" height="40" class="me-2">
-            <b style="font-size:30px;">Repuestos Automotrices Marcus</b>
+            <img src="<?php echo SITE_LOGO; ?>" alt="Logo" width="40" height="40" class="me-2">
+            <b style="font-size:30px;"><?php echo COMPANY_NAME; ?></b>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -68,7 +69,7 @@ $products_result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </li>
             </ul>
         </div>
-        <a href="https://wa.me/+541169651171" class="btn btn-danger d-none d-lg-block">Contáctanos</a>
+        <a href="<?php echo COMPANY_WHATSAPP_LINK; ?>" class="btn btn-danger d-none d-lg-block">Contáctanos</a>
     </nav>
 </header>
 
@@ -99,7 +100,7 @@ $products_result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
 
-<a href="https://wa.me/+541169651171" class="whatsapp-float" target="_blank">
+<a href="<?php echo COMPANY_WHATSAPP_LINK; ?>" class="whatsapp-float" target="_blank">
     <i class="fab fa-whatsapp my-float"></i>
 </a>
 
