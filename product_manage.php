@@ -8,12 +8,6 @@ if (!isset($_SESSION['user_id'])) {
 
 include 'db.php';
 
-// Conexión a la base de datos
-$conn = new mysqli("localhost", "u541681057_repuestos_db", "6Kx&XZE=", "u541681057_repuestos_db");
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
-
 // Función para obtener todas las categorías
 function getCategories($conn) {
     $result = $conn->query("SELECT * FROM categories ORDER BY name");
