@@ -1,81 +1,181 @@
 <?php
-session_start();
-require_once __DIR__ . '/config/db.php';
+include 'db.php';
 
-// Función para cargar la vista
-function loadView($view) {
-    $path = __DIR__ . "/views/$view.php"; // Ruta absoluta
-    if (file_exists($path)) {
-        require $path;
-    } else {
-        echo "<h1>404 - Página no encontrada</h1>";
-    }
-}
+$stmt = $pdo->query("SELECT * FROM categories");
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Definir las rutas
-$route = isset($_GET['page']) ? $_GET['page'] : 'index';
-
-// Verificar si el usuario está logueado
-$loggedIn = isset($_SESSION['role']);
-
-// Rutas permitidas
-switch ($route) {
-    case 'index':
-        loadView('front/index');
-        break;
-
-    case 'contacto':
-        loadView('front/contact_form');
-        break;
-
-    case 'productos':
-        loadView('front/products');
-        break;
-
-    case 'ingresar':
-    case 'login':
-        loadView('front/login');
-        break;
-
-    case 'projects':
-        if ($loggedIn && $_SESSION['role'] === 'owner') {
-            loadView('owner/projects');
-        } else {
-            header("Location: login");
-            exit;
-        }
-        break;
-
-    case 'owner-home':
-        if ($loggedIn && $_SESSION['role'] === 'owner') {
-            loadView('owner/inicio');
-        } else {
-            header("Location: login");
-            exit;
-        }
-        break;
-
-    case 'logout':
-        session_destroy();
-        header("Location: login");
-        exit;
-
-    case 'sitemap':
-        require_once __DIR__ . '/helpers/sitemap.php';
-        break;
-
-    default:
-        require __DIR__ . '/controllers/productController.php';
-
-        // Check if route exists as a product slug
-        $productController = new ProductController($conn);
-
-        if ($product = $productController->viewBySlug($route)) {
-            $_GET['slug'] = $route; // Set slug for product view
-            loadView('front/products');
-            break;
-        }
-        loadView('front/index');
-        break;
-}
+// Obtener productos
+$stmt = $pdo->query("SELECT p.*, pi.image FROM products p LEFT JOIN product_images pi ON p.id = pi.product_id");
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repuestos Automotrices Marcus - Venta de Repuestos y Autopartes</title>
+    <meta name="description" content="La mejor tienda de repuestos automotrices en Argentina. Amplio catálogo de autopartes originales y alternativos, frenos, suspensión, motor y más. Envíos a todo el país y asesoramiento profesional.">
+    <link rel="icon" href="roundedLogo.png" type="image/png">
+
+    <meta name="keywords" content="repuestos automotrices, autopartes, repuestos originales, repuestos alternativos, frenos, suspensión, motor, repuestos de autos, venta de repuestos, Marcus autopartes">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta property="og:title" content="Repuestos Automotrices Marcus - Líder en Venta de Autopartes">
+    <meta property="og:description" content="Encuentra todos los repuestos que necesitas para tu vehículo. Calidad garantizada y los mejores precios del mercado.">
+    <meta property="og:image" content="https://repuestosautomotricesmarcus.com.ar/portada.png">
+    <meta property="og:url" content="https://repuestosautomotricesmarcus.com.ar">
+    <style>
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 100;
+        }
+
+        .whatsapp-float:hover {
+            text-decoration: none;
+            color: #FFF;
+            background-color: #1ab152;
+        }
+
+        .my-float {
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+<header class="d-flex align-items-center">
+    <nav class="navbar navbar-expand-lg navbar-dark container">
+    <a class="navbar-brand d-flex align-items-center text-light" href="#">
+        <img src="roundedLogo.png" alt="Logo Repuestos Automotrices Marcus" width="40" height="40" class="me-2">
+        <b style="font-size:30px;">Repuestos Automotrices Marcus</b>
+    </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link active text-light" aria-current="page" href="#">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="products">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="location">Nosotros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="Estoy interesado en Primer producto">Contacto</a>
+                </li>
+            </ul>
+        </div>
+        <a href="https://wa.me/+541169651171" class="btn btn-danger d-none d-lg-block">Contáctanos</a>
+    </nav>
+</header>
+
+<div id="carouselExample" class="carousel slide">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="b1.png" class="d-block w-100" alt="Repuestos automotrices de calidad" style="height: 60vh; object-fit: cover;">
+      <div class="carousel-caption d-flex flex-column justify-content-center align-items-center" style="height: 50vh;">
+        <h1 class="display-3">Repuestos Automotrices de Calidad</h1>
+        <p class="lead">Las mejores marcas y garantía asegurada.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="b2.png" class="d-block w-100" alt="Autopartes y repuestos originales" style="height: 60vh; object-fit: cover;">
+      <div class="carousel-caption d-flex flex-column justify-content-center align-items-center" style="height: 50vh;">
+        <h1 class="display-3">Autopartes Originales y Alternativas</h1>
+        <p class="lead">Amplio stock y precios competitivos.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="b3.png" class="d-block w-100" alt="Repuestos para todas las marcas" style="height: 60vh; object-fit: cover;">
+      <div class="carousel-caption d-flex flex-column justify-content-center align-items-center" style="height: 50vh;">
+        <h1 class="display-3">Repuestos para Todas las Marcas</h1>
+        <p class="lead">Asesoramiento experto y envíos a todo el país.</p>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+
+
+
+<section id="products" class="container my-5">
+    <!-- Barra de búsqueda -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="input-group">
+                <input type="text" class="form-control form-control-lg" placeholder="Buscar productos..." aria-label="Buscar productos">
+                <button class="btn btn-danger btn-lg" type="button">Buscar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Categorías a la izquierda -->
+        <div class="col-lg-3">
+            <h4 class="mb-4">Categorías</h4>
+            <div class="list-group list-group-flush">
+                <?php foreach ($categories as $category): ?>
+                    <a href="category.php?id=<?= htmlspecialchars($category['id']) ?>" class="list-group-item list-group-item-action bg-dark text-light rounded mb-2"><?= htmlspecialchars($category['name']) ?></a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <!-- Productos a la derecha -->
+        <div class="col-lg-9">
+            <h4 class="mb-4">Productos</h4>
+            <div class="row">
+                <?php foreach ($products as $product): ?>
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card border-0 shadow-lg h-100">
+                            <img src="<?= htmlspecialchars($product['image']) ?>" class="card-img-top" style="height:270px;width:100%;object-fit:cover;" alt="<?= htmlspecialchars($product['name']) ?>">
+
+                            <div class="card-body text-center">
+                                <h5 class="card-title fw-bold"><?= htmlspecialchars($product['name']) ?></h5>
+                                <p class="card-text text-muted">$<?= htmlspecialchars($product['price']) ?></p>
+                                <a href="product.php?id=<?= htmlspecialchars($product['id']) ?>" class="btn btn-outline-danger">Ver más</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</section>
+  <section id="location">
+      <div class="container text-white p-5">
+                  <h2 class="mb-4">Podes Visitarnos</h2>
+        <p><strong>Dirección:</strong> Tupungato 1436, Caseros</p>
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3283.990338088217!2d-58.56999668477042!3d-34.60603888045946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb7d0c439349d%3A0x837d3408ab67b6a1!2sTupungato%201436%2C%20B1678%20Caseros%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1sen!2sar!4v1646141661898!5m2!1sen!2sar" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <a href="https://wa.me/+541169651171" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp my-float"></i>
+    </a>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
