@@ -141,98 +141,178 @@ $category_json = json_encode($category_names);
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="mb-4 text-right">
-        <a href="login.php?logout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Cerrar Sesión</a>
-    </div>
-    <div class="max-w-7xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8">Gestión de Productos</h1>
-
-        <div class="flex space-x-8">
-            <!-- Lista de Productos -->
-            <div class="w-2/3 bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-semibold mb-4">Productos <span class="text-sm text-gray-600 mb-4">(<?php echo count($products); ?> Registrados)</span></h2> 
-                
-                <!-- Búsqueda y Filtros -->
-                <div class="mb-4 flex space-x-4">
-                    <input type="text" id="search" placeholder="Buscar productos..." class="p-2 border rounded flex-grow">
-                    <select id="categoryFilter" class="p-2 border rounded">
-                        <option value="">Todas las categorías</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?php echo $category['name']; ?>"><?php echo $category['name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900">Panel de Administración</h1>
                 </div>
+                <div class="flex items-center">
+                    <a href="login.php?logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full" id="productsTable">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="p-2 text-left">Imágenes</th>
-                                <th class="p-2 text-left">Nombre</th>
-                                <th class="p-2 text-left">Descripción</th>
-                                <th class="p-2 text-left">Categorías</th>
-                                <th class="p-2 text-left">Precio</th>
-                                <th class="p-2 text-left">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($products as $product): ?>
-                                <tr class="border-b">
-                                    <td class="p-2">
-                                        <?php
-                                        $image_result = $conn->query("SELECT image FROM product_images WHERE product_id = " . $product['id']);
-                                        $images = $image_result->fetch_all(MYSQLI_ASSOC);
-                                        foreach ($images as $img):
-                                        ?>
-                                            <img src="<?php echo $img['image']; ?>" alt="<?php echo $product['name']; ?>" class="w-20 h-20 object-cover mb-2">
-                                        <?php endforeach; ?>
-                                    </td>
-                                    <td class="p-2"><?php echo $product['name']; ?></td>
-                                    <td class="p-2"><?php echo $product['description']; ?></td>
-                                    <td class="p-2"><?php echo $product['categories']; ?></td>
-                                    <td class="p-2"><?php echo $product['price']; ?></td>
-                                    <td class="p-2 flex space-x-2">
-                                        <a href="#" onclick="editProduct(<?php echo htmlspecialchars(json_encode(['id' => $product['id'], 'name' => $product['name'], 'description' => $product['description'], 'price' => $product['price'], 'categories' => $product['categories']])); ?>)" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Editar</a>
-                                        <a href="?delete=<?php echo $product['id']; ?>" onclick="return confirm('¿Estás seguro?')" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Eliminar</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Formulario -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-8">
+                    <h2 class="text-xl font-semibold mb-6 text-gray-900">Añadir/Editar Producto</h2>
+                    <form id="productForm" method="post" enctype="multipart/form-data" class="space-y-6">
+                        <input type="hidden" name="id" id="productId">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Producto</label>
+                            <input type="text" name="name" id="productName" required 
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                            <textarea name="description" id="productDescription" required rows="4"
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Precio</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
+                                <input type="number" name="price" id="productPrice" step="0.01" required
+                                    class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Categorías</label>
+                            <input name="categories" id="productCategories" placeholder="Escribe o selecciona categorías"
+                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Imágenes</label>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-indigo-500 transition-colors duration-150">
+                                <div class="space-y-1 text-center">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <div class="flex text-sm text-gray-600">
+                                        <label class="relative cursor-pointer rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                            <span>Sube imágenes</span>
+                                            <input type="file" name="images[]" id="imageUpload" multiple accept="image/*" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">o arrastra y suelta</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PNG, JPG, GIF hasta 10MB</p>
+                                </div>
+                            </div>
+                            <div id="imagePreview" class="mt-4 grid grid-cols-3 gap-4"></div>
+                        </div>
+
+                        <button type="submit" name="submit" 
+                            class="w-full bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                            Guardar Producto
+                        </button>
+                    </form>
                 </div>
             </div>
 
-            <!-- Formulario -->
-            <div class="w-1/3 bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-2xl font-semibold mb-4">Añadir/Editar Producto</h2>
-                <form id="productForm" method="post" enctype="multipart/form-data" class="space-y-4">
-                    <input type="hidden" name="id" id="productId">
-                    <input type="text" name="name" id="productName" placeholder="Nombre del Producto" required class="w-full p-2 border rounded">
-                    <textarea name="description" id="productDescription" placeholder="Descripción del Producto" required class="w-full p-2 border rounded"></textarea>
-                    <input type="number" name="price" id="productPrice" placeholder="Precio" step="0.01" required class="w-full p-2 border rounded">
-                    
-                    <!-- Imagenes -->
-                    <div class="relative border-2 border-gray-300 border-dashed rounded-md p-6">
-                        <input type="file" name="images[]" id="imageUpload" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                        <div class="text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <p class="mt-1 text-sm text-gray-600">
-                                <span class="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition duration-150 ease-in-out">Sube imágenes</span>
-                                o arrastra y suelta
-                            </p>
-                            <p class="mt-1 text-xs text-gray-500">PNG, JPG, GIF hasta 10MB cada una</p>
+            <!-- Lista de Productos -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">
+                            Productos <span class="text-sm text-gray-500">(<?php echo count($products); ?> Registrados)</span>
+                        </h2>
+                        
+                        <div class="flex space-x-4">
+                            <input type="text" id="search" placeholder="Buscar productos..." 
+                                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <select id="categoryFilter" 
+                                class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">Todas las categorías</option>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?php echo $category['name']; ?>"><?php echo $category['name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
-                        <div id="imagePreview" class="mt-4"></div>
                     </div>
 
-                    <input name="categories" id="productCategories" placeholder="Categorías (escribe o selecciona)" class="w-full p-2 border rounded">
-                    <button type="submit" name="submit" class="w-100 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
-                        Guardar Producto
-                    </button>
-                </form>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200" id="productsTable">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imágenes</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categorías</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <?php foreach ($products as $product): ?>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex -space-x-2">
+                                                <?php
+                                                $image_result = $conn->query("SELECT image FROM product_images WHERE product_id = " . $product['id']);
+                                                $images = $image_result->fetch_all(MYSQLI_ASSOC);
+                                                foreach ($images as $img):
+                                                ?>
+                                                    <img src="<?php echo $img['image']; ?>" alt="<?php echo $product['name']; ?>" 
+                                                        class="w-12 h-12 rounded-full object-cover border-2 border-white">
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-medium text-gray-900"><?php echo $product['name']; ?></div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-500"><?php echo $product['description']; ?></div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex flex-wrap gap-2">
+                                                <?php 
+                                                $categories = explode(',', $product['categories']);
+                                                foreach($categories as $category): 
+                                                    if(!empty($category)):
+                                                ?>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                                        <?php echo $category; ?>
+                                                    </span>
+                                                <?php 
+                                                    endif;
+                                                endforeach; 
+                                                ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-900">$<?php echo number_format($product['price'], 2); ?></div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex space-x-2">
+                                                <button onclick="editProduct(<?php echo htmlspecialchars(json_encode(['id' => $product['id'], 'name' => $product['name'], 'description' => $product['description'], 'price' => $product['price'], 'categories' => $product['categories']])); ?>)"
+                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                    Editar
+                                                </button>
+                                                <a href="?delete=<?php echo $product['id']; ?>" onclick="return confirm('¿Estás seguro?')"
+                                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                    Eliminar
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -254,66 +334,67 @@ $category_json = json_encode($category_names);
 
         // Función para editar un producto
         function editProduct(product) {
-    document.getElementById('productId').value = product.id;
-    document.getElementById('productName').value = product.name;
-    document.getElementById('productDescription').value = product.description;
-    document.getElementById('productPrice').value = product.price;
-    tagify.removeAllTags();
-    if (product.categories) {
-        tagify.addTags(product.categories.split(','));
-    }
+            document.getElementById('productId').value = product.id;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productDescription').value = product.description;
+            document.getElementById('productPrice').value = product.price;
+            tagify.removeAllTags();
+            if (product.categories) {
+                tagify.addTags(product.categories.split(','));
+            }
 
-    // Mostrar imágenes actuales
-    let previewContainer = document.getElementById('imagePreview');
-    previewContainer.innerHTML = '';
-    
-    // Obtener las imágenes del producto
-    fetch(`get_product_images.php?id=${product.id}`)
-        .then(response => response.json())
-        .then(images => {
-            images.forEach(img => {
-                let imgContainer = document.createElement('div');
-                imgContainer.className = 'relative inline-block mr-2 mb-2';
+            // Mostrar imágenes actuales
+            let previewContainer = document.getElementById('imagePreview');
+            previewContainer.innerHTML = '';
+            
+            // Obtener las imágenes del producto
+            fetch(`get_product_images.php?id=${product.id}`)
+                .then(response => response.json())
+                .then(images => {
+                    images.forEach(img => {
+                        let imgContainer = document.createElement('div');
+                        imgContainer.className = 'relative';
 
-                let imgElement = document.createElement('img');
-                imgElement.src = img.image;
-                imgElement.alt = product.name;
-                imgElement.className = 'w-20 h-20 object-cover';
-                imgContainer.appendChild(imgElement);
+                        let imgElement = document.createElement('img');
+                        imgElement.src = img.image;
+                        imgElement.alt = product.name;
+                        imgElement.className = 'w-full h-24 object-cover rounded-lg';
+                        imgContainer.appendChild(imgElement);
 
-                let deleteIcon = document.createElement('button');
-                deleteIcon.innerHTML = '&#x2715;'; // Cruz (×)
-                deleteIcon.className = 'absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer';
-                deleteIcon.onclick = function(e) {
-                    e.preventDefault();
-                    if (confirm('¿Estás seguro de que quieres eliminar esta imagen?')) {
-                        deleteProductImage(product.id, img.id, imgContainer);
-                    }
-                };
-                imgContainer.appendChild(deleteIcon);
+                        let deleteIcon = document.createElement('button');
+                        deleteIcon.innerHTML = '×';
+                        deleteIcon.className = 'absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 focus:outline-none';
+                        deleteIcon.onclick = function(e) {
+                            e.preventDefault();
+                            if (confirm('¿Estás seguro de que quieres eliminar esta imagen?')) {
+                                deleteProductImage(product.id, img.id, imgContainer);
+                            }
+                        };
+                        imgContainer.appendChild(deleteIcon);
 
-                previewContainer.appendChild(imgContainer);
-            });
-        });
-}
-
-function deleteProductImage(productId, imageId, imgContainer) {
-    fetch(`delete_product_image.php?product_id=${productId}&image_id=${imageId}`, {
-        method: 'DELETE'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            imgContainer.remove();
-        } else {
-            alert('Error al eliminar la imagen');
+                        previewContainer.appendChild(imgContainer);
+                    });
+                });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error al eliminar la imagen');
-    });
-}
+
+        function deleteProductImage(productId, imageId, imgContainer) {
+            fetch(`delete_product_image.php?product_id=${productId}&image_id=${imageId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    imgContainer.remove();
+                } else {
+                    alert('Error al eliminar la imagen');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar la imagen');
+            });
+        }
+
         // Función para filtrar productos
         function filterProducts() {
             var input, filter, table, tr, td, i, txtValue;
@@ -356,10 +437,15 @@ function deleteProductImage(productId, imageId, imgContainer) {
                 }
                 let reader = new FileReader();
                 reader.onload = function(e) {
+                    let imgContainer = document.createElement('div');
+                    imgContainer.className = 'relative';
+                    
                     let imgElement = document.createElement('img');
                     imgElement.src = e.target.result;
-                    imgElement.className = 'w-20 h-20 object-cover mb-2';
-                    previewContainer.appendChild(imgElement);
+                    imgElement.className = 'w-full h-24 object-cover rounded-lg';
+                    imgContainer.appendChild(imgElement);
+                    
+                    previewContainer.appendChild(imgContainer);
                 };
                 reader.readAsDataURL(file);
             });
