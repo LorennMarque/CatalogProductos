@@ -167,9 +167,9 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <section id="location">
       <div class="container text-white p-5">
                   <h2 class="mb-4">Podes Visitarnos</h2>
-        <p><strong>Dirección:</strong> Tupungato 1436, Caseros</p>
+        <p><strong>Dirección:</strong> <?php echo COMPANY_ADDRESS; ?></p>
         <div class="embed-responsive embed-responsive-16by9">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3283.990338088217!2d-58.56999668477042!3d-34.60603888045946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb7d0c439349d%3A0x837d3408ab67b6a1!2sTupungato%201436%2C%20B1678%20Caseros%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1sen!2sar!4v1646141661898!5m2!1sen!2sar" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.1459919934646!2d-58.451003187748064!3d-34.60046965721553!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca091f58710d%3A0x20a8f3be25064f44!2sDr.%20Luis%20Bel%C3%A1ustegui%20286%2C%20C1414DZB%20Cdad.%20Aut%C3%B3noma%20de%20Buenos%20Aires%2C%20Argentina!5e0!3m2!1ses!2scl!4v1736892846163!5m2!1ses!2scl" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
     </section>
