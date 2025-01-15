@@ -2,12 +2,13 @@
 include 'config.php';
 include 'db.php';
 
-$stmt = $pdo->query("SELECT * FROM categories");
-$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Obtener categorías
+$stmt = $conn->query("SELECT * FROM categories");
+$categories = $stmt->fetch_all(MYSQLI_ASSOC);
 
 // Obtener productos
-$stmt = $pdo->query("SELECT p.*, pi.image FROM products p LEFT JOIN product_images pi ON p.id = pi.product_id");
-$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $conn->query("SELECT p.*, pi.image FROM products p LEFT JOIN product_images pi ON p.id = pi.product_id GROUP BY p.id");
+$products = $stmt->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="es">
