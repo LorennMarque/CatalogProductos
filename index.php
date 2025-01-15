@@ -57,10 +57,10 @@ $products = $stmt->fetch_all(MYSQLI_ASSOC);
 <body>
 <header class="d-flex align-items-center">
     <nav class="navbar navbar-expand-lg navbar-dark container">
-    <a class="navbar-brand d-flex align-items-center text-light" href="#">
-        <img src="<?php echo SITE_LOGO; ?>" alt="Logo <?php echo COMPANY_NAME; ?>" width="40" height="40" class="me-2">
-        <b style="font-size:30px;"><?php echo COMPANY_NAME; ?></b>
-    </a>
+        <a class="navbar-brand d-flex align-items-center text-light" href="#">
+            <img src="<?php echo SITE_LOGO; ?>" alt="Logo <?php echo COMPANY_NAME; ?>" width="40" height="40" class="me-2">
+            <span class="navbar-brand-text"><?php echo COMPANY_NAME; ?></span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
