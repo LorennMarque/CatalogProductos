@@ -64,8 +64,8 @@ $products = $stmt->fetch_all(MYSQLI_ASSOC);
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav text-center">
+        <!-- <div class="collapse navbar-collapse justify-content-center" id="navbarNav"> -->
+            <!-- <ul class="navbar-nav text-center">
                 <li class="nav-item">
                     <a class="nav-link active text-light" aria-current="page" href="#">Inicio</a>
                 </li>
@@ -78,8 +78,8 @@ $products = $stmt->fetch_all(MYSQLI_ASSOC);
                 <li class="nav-item">
                     <a class="nav-link text-light" href="Estoy interesado en Primer producto">Contacto</a>
                 </li>
-            </ul>
-        </div>
+            </ul> -->
+        <!-- </div> -->
         <a href="<?php echo COMPANY_WHATSAPP_LINK; ?>" class="btn btn-danger d-none d-lg-block">Contáctanos</a>
     </nav>
 </header>
