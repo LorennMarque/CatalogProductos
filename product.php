@@ -9,10 +9,10 @@ $product_query = "SELECT p.*, c.name as category_name
                   LEFT JOIN product_categories pc ON p.id = pc.product_id
                   LEFT JOIN categories c ON pc.category_id = c.id
                   WHERE p.id = ?";
-$stmt = $pdo->prepare($product_query);
-$stmt->bindParam(1, $product_id, PDO::PARAM_INT);
+$stmt = $conn->prepare($product_query); // Changed to $conn
+$stmt->bind_param("i", $product_id); // More efficient binding
 $stmt->execute();
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
+$product = $stmt->get_result()->fetch_assoc(); //Simplified fetching
 
 if (!$product) {
     header("Location: index.php");
@@ -20,10 +20,11 @@ if (!$product) {
 }
 
 $images_query = "SELECT image FROM product_images WHERE product_id = ?";
-$stmt = $pdo->prepare($images_query);
-$stmt->bindParam(1, $product_id, PDO::PARAM_INT);
+$stmt = $conn->prepare($images_query); // Changed to $conn
+$stmt->bind_param("i", $product_id); // More efficient binding
 $stmt->execute();
-$images_result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$images_result = $stmt->get_result(); //Simplified fetching
+
 
 $recommendations_query = "SELECT p.*, pi.image 
                           FROM products p 
@@ -31,10 +32,11 @@ $recommendations_query = "SELECT p.*, pi.image
                           WHERE p.id != ? 
                           ORDER BY RAND() 
                           LIMIT 5";
-$stmt = $pdo->prepare($recommendations_query);
-$stmt->bindParam(1, $product_id, PDO::PARAM_INT);
+$stmt = $conn->prepare($recommendations_query); // Changed to $conn
+$stmt->bind_param("i", $product_id); // More efficient binding
 $stmt->execute();
-$recommendations_result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$recommendations_result = $stmt->get_result(); //Simplified fetching
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
