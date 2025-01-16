@@ -4,11 +4,11 @@ include 'db.php';
 
 $category_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-$category_query = "SELECT * FROM categories WHERE id = :id";
-$stmt = $pdo->prepare($category_query);
-$stmt->bindParam(':id', $category_id, PDO::PARAM_INT);
+$category_query = "SELECT * FROM categories WHERE id = ?";
+$stmt = $conn->prepare($category_query);
+$stmt->bind_param("i", $category_id);
 $stmt->execute();
-$category = $stmt->fetch(PDO::FETCH_ASSOC);
+$category = $stmt->get_result()->fetch_assoc();
 
 if (!$category) {
     header('Location: index.php');
@@ -19,12 +19,12 @@ $products_query = "SELECT p.*, pi.image as product_image
                    FROM products p 
                    LEFT JOIN product_images pi ON p.id = pi.product_id 
                    LEFT JOIN product_categories pc ON p.id = pc.product_id
-                   WHERE pc.category_id = :category_id
+                   WHERE pc.category_id = ?
                    GROUP BY p.id";
-$stmt = $pdo->prepare($products_query);
-$stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+$stmt = $conn->prepare($products_query);
+$stmt->bind_param("i", $category_id);
 $stmt->execute();
-$products_result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$products_result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -109,5 +109,5 @@ $products_result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </html>
 
 <?php
-$pdo = null; // Cerrar la conexión a la base de datos
+$conn->close(); // Cerrar la conexión a la base de datos
 ?>
