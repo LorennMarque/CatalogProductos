@@ -74,13 +74,13 @@ $products = $stmt->fetch_all(MYSQLI_ASSOC);
 
         .social-links a {
             display: block;
-            width: 45px;
-            height: 45px;
+            width: 60px;
+            height: 60px;
             background: #333;
             color: white;
             text-align: center;
-            line-height: 45px;
-            border-radius: 50%;
+            line-height: 60px;
+            border-radius: 10px;
             margin: 10px 0;
             transition: all 0.3s ease;
         }
@@ -95,8 +95,8 @@ $products = $stmt->fetch_all(MYSQLI_ASSOC);
 </head>
 <body>
 <div class="social-links">
-    <a href="https://www.instagram.com/repuestosmarcus30/" class="facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://www.facebook.com/profile.php?id=61572431342743" class="instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=61572431342743" class="facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/repuestosmarcus30/" class="instagram" target="_blank"><i class="fab fa-instagram"></i></a>
 </div>
 
 <header class="d-flex align-items-center">
