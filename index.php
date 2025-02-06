@@ -91,14 +91,12 @@ $products = $stmt->fetch_all(MYSQLI_ASSOC);
 
         .social-links .facebook { background: #3b5998; }
         .social-links .instagram { background: #e4405f; }
-        .social-links .twitter { background: #1da1f2; }
     </style>
 </head>
 <body>
 <div class="social-links">
-    <a href="<?php echo FACEBOOK_URL; ?>" class="facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-    <a href="<?php echo INSTAGRAM_URL; ?>" class="instagram" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a href="<?php echo TWITTER_URL; ?>" class="twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.instagram.com/repuestosmarcus30/" class="facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=61572431342743" class="instagram" target="_blank"><i class="fab fa-instagram"></i></a>
 </div>
 
 <header class="d-flex align-items-center">
