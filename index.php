@@ -134,7 +134,7 @@ $products = $stmt->fetch_all(MYSQLI_ASSOC);
       <img src="b1.png" class="d-block w-100" alt="Repuestos automotrices de calidad" style="height: 60vh; object-fit: cover;">
       <div class="carousel-caption d-flex flex-column justify-content-center align-items-center" style="height: 50vh;">
         <h1 class="display-3">Repuestos Automotrices de Calidad</h1>
-        <p class="lead">Las mejores marcas y garantía asegurada.</p>
+        <p class="lead">Importador directo, Venta por mayor y menor</p>
       </div>
     </div>
     <div class="carousel-item">
